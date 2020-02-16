@@ -1,79 +1,10 @@
 ---
-- hosts: 127.0.0.1
-  connection: local
+- hosts: all
   become: yes
-  vars:
-    sys_packages:
-      - wget
-      - vim
-      - git
-      - htop
-    sshd_allow_users:
-      - pi
-  tasks:
-    - name: Configure motd
-      template:
-        src: motd/motd.j2
-        dest: /etc/motd
-      tags: motd
+  vars_files:
+    - group_vars/main.yml
+  roles:
+    - base
 
-    - name: Install ca-certificates
-      apt:
-        name: ca-certificates
-        state: "latest"
-        cache_valid_time: 3600
-      tags: packages
-
-    - name: Install system packages
-      apt:
-        name: "{{ item }}"
-        state: present
-      loop: "{{ sys_packages }}"
-      tags: packages
-
-    - name: Copy bashrc for pi user
-      copy:
-        src: files/.bashrc
-        dest: /home/pi
-        owner: pi
-        group: pi
-      tags: bashrc
-
-    - name: Copy bashrc for root user
-      copy:
-        src: files/.bashrc
-        dest: /root
-      tags: bashrc
-
-    - name: Copy gitconfig configuration
-      copy:
-        src: files/.gitconfig
-        dest: /home/pi
-        owner: pi
-        group: pi
-      tags: git
-
-    - name: Copy vimrc configuration
-      copy:
-        src: files/vimrc
-        dest: /etc/vim/
-      tags: vim
-
-    - name: Configure vim as default editor
-      command: update-alternatives --set editor /usr/bin/vim.basic
-      changed_when: false
-      tags: vim
-
-    - name: Copy sshd config
-      template:
-        src: ssh/sshd_config.j2
-        dest: /etc/ssh/sshd_config
-      notify:
-        - reload ssh
-      tags: ssh
-
-  handlers:
-    - name: reload ssh
-      service:
-        name: ssh
-        state: reloaded
+- import_playbook: local.yml
+- import_playbook: worker.yml

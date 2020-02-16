@@ -1,0 +1,55 @@
+---
+- name: Configure motd
+  template:
+    src: motd/motd.j2
+    dest: /etc/motd
+  tags: motd
+
+- name: Install ca-certificates
+  apt:
+    name: ca-certificates
+    state: "latest"
+    cache_valid_time: 3600
+  tags: packages
+
+- name: Install system packages
+  apt:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ sys_packages }}"
+  tags: packages
+
+- name: Copy tmux config for pi
+  copy:
+    src: files/.tmux.conf
+    dest: /home/pi
+    owner: pi
+    group: pi
+  tags: tmux
+
+- name: Copy bashrc for pi user
+  copy:
+    src: files/.bashrc
+    dest: /home/pi
+    owner: pi
+    group: pi
+  tags: bashrc
+
+- name: Copy bashrc for root user
+  copy:
+    src: files/.bashrc
+    dest: /root
+  tags: bashrc
+
+- name: Copy gitconfig configuration
+  copy:
+    src: files/.gitconfig
+    dest: /home/pi
+    owner: pi
+    group: pi
+  tags: git
+
+- name: Set timezone to Europe/Paris
+  timezone:
+    name: Europe/Paris
+  tags: timezone

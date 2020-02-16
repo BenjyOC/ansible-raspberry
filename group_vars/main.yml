@@ -1,0 +1,9 @@
+---
+sys_packages:
+  - wget
+  - vim
+  - git
+  - htop
+  - tmux
+sshd_allow_users:
+  - pi

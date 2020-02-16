@@ -1,0 +1,14 @@
+---
+- hosts: local
+  become: yes
+  vars_files:
+    - host_vars/local.yml
+  tasks:
+  - hostname:
+      name: "{{ hostname }}"
+
+  - name: fqdns
+    lineinfile:
+      path: /etc/hosts
+      regexp: '^127\.0\.0\.1\s'
+      line: "127.0.0.1 {{ hostname }} localhost"
