@@ -1,0 +1,5 @@
+---
+- name: Get hugo debian ARM package
+  apt:
+    deb: https://github.com/gohugoio/hugo/releases/download/v0.64.1/hugo_0.64.1_Linux-ARM.deb
+  tags: blog

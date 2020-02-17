@@ -5,5 +5,6 @@ sys_packages:
   - git
   - htop
   - tmux
+  - iperf3
 sshd_allow_users:
   - pi
